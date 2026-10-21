@@ -65,27 +65,27 @@
     position: relative;
   }
   .age-side {
-    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    padding-top: 24px; /* first grid row starts after the 22px week-label row + 2px gap */
+    padding-left: 2px;
     min-height: 10px;
   }
   .age-heading {
-    position: absolute;
-    top: 58px;
-    left: 8px;
     color: var(--navy);
     font-size: 27px;
     line-height: 1;
     font-weight: 400;
-    transform: rotate(-90deg);
-    transform-origin: top left;
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
     white-space: nowrap;
   }
   .vertical-arrow {
-    position: absolute;
-    left: 6px;
-    top: 69px;
     width: 27px;
     height: 190px;
+    flex: none;
     overflow: visible;
   }
   .chart-main { width: 850px; }
