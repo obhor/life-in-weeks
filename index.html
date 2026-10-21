@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A 90-Year Human Life in Weeks</title>
+<style>
+  :root {
+    --navy: #080b88;
+    --red: #d10d13;
+    --ink: #171717;
+    --cell-size: 9.28px;
+    --column-gap: 7.2px;
+    --row-gap: 5.4px;
+  }
+  * { box-sizing: border-box; }
+  html { background: #fff; }
+  body {
+    margin: 0;
+    background: #fff;
+    color: var(--ink);
+    font-family: Arial, Helvetica, sans-serif;
+  }
+  .viewport {
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: visible;
+    scrollbar-width: thin;
+  }
+  .sheet {
+    position: relative;
+    width: 900px;
+    margin: 21px auto 12px;
+    padding: 0;
+  }
+  .title {
+    margin: 0 0 0 50px;
+    color: var(--navy);
+    white-space: nowrap;
+    font-size: 55px;
+    font-weight: 700;
+    letter-spacing: -1.1px;
+    line-height: 1.08;
+  }
+  .title .red { color: var(--red); }
+  .week-heading {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    height: 40px;
+    margin: 33px 0 0 54px;
+    color: var(--navy);
+    white-space: nowrap;
+    font-size: 29px;
+    font-weight: 400;
+    line-height: 1;
+  }
+  .horizontal-arrow { width: 147px; height: 28px; flex: 0 0 147px; overflow: visible; }
+  .chart-wrap {
+    display: grid;
+    grid-template-columns: 45px 850px;
+    column-gap: 5px;
+    margin-top: 11px;
+    align-items: start;
+    position: relative;
+  }
+  .age-side {
+    position: relative;
+    min-height: 10px;
+  }
+  .age-heading {
+    position: absolute;
+    top: 33px;
+    left: 17px;
+    color: var(--navy);
+    font-size: 27px;
+    line-height: 1;
+    font-weight: 400;
+    transform: rotate(-90deg);
+    transform-origin: top left;
+    white-space: nowrap;
+  }
+  .vertical-arrow {
+    position: absolute;
+    left: 6px;
+    top: 69px;
+    width: 27px;
+    height: 190px;
+    overflow: visible;
+  }
+  .chart-main { width: 850px; }
+  .week-labels {
+    display: grid;
+    grid-template-columns: repeat(52, minmax(0, 1fr));
+    column-gap: var(--column-gap);
+    align-items: end;
+    height: 22px;
+    margin-bottom: 2px;
+    color: #303030;
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 1;
+  }
+  .week-labels span { text-align: center; transform: translateX(-1px); }
+  .grid-row-area {
+    display: grid;
+    grid-template-columns: 1fr;
+    position: relative;
+  }
+  .age-labels {
+    position: absolute;
+    top: 0;
+    left: -45px;
+    width: 38px;
+    display: grid;
+    grid-template-rows: repeat(90, var(--cell-size));
+    row-gap: var(--row-gap);
+    pointer-events: none;
+    color: #303030;
+    font-size: 17px;
+    line-height: var(--cell-size);
+    text-align: right;
+  }
+  .age-labels span { align-self: center; }
+  .weeks-grid {
+    display: grid;
+    grid-template-columns: repeat(52, minmax(0, 1fr));
+    column-gap: var(--column-gap);
+    row-gap: var(--row-gap);
+    width: 850px;
+  }
+  .week {
+    display: block;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 1px solid #292929;
+    border-radius: 0;
+    background: #fff;
+    appearance: none;
+    cursor: pointer;
+    transition: background-color 80ms linear, border-color 80ms linear;
+  }
+  .week[aria-pressed="true"] { background: var(--navy); border-color: var(--navy); }
+  .week:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; z-index: 1; }
+  .week:hover { border-color: var(--navy); }
+  .footer {
+    position: relative;
+    width: 850px;
+    height: 33px;
+    margin-left: 50px;
+    margin-top: 14px;
+    text-align: center;
+  }
+  .source {
+    display: inline-block;
+    color: #080808;
+    font-size: 21px;
+    font-weight: 700;
+    letter-spacing: .1px;
+  }
+  .end-age {
+    position: absolute;
+    right: -39px;
+    top: -12px;
+    color: #080808;
+    font-size: 31px;
+    font-weight: 700;
+    line-height: 1;
+  }
+  @media (max-width: 920px) {
+    .sheet { margin-left: 0; margin-right: 0; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .week { transition: none; }
+  }
+  @media print {
+    .viewport { overflow: visible; }
+    .sheet { margin-top: 0; }
+    .week { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+  }
+</style>
+</head>
+<body>
+<div class="viewport">
+  <main class="sheet" aria-label="A 90-year human life in weeks">
+    <h1 class="title">A 90-Year Human Life in <span class="red">Weeks</span></h1>
+
+    <div class="week-heading">
+      <span>Week of the Year</span>
+      <svg class="horizontal-arrow" viewBox="0 0 147 28" role="img" aria-label="Arrow pointing right">
+        <path d="M1 14 H143 M130 3 L143 14 L130 25" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </div>
+
+    <section class="chart-wrap" aria-label="Weeks across age in years">
+      <div class="age-side" aria-hidden="true">
+        <div class="age-heading">Age</div>
+        <svg class="vertical-arrow" viewBox="0 0 27 190">
+          <path d="M13.5 1 V185 M3 174 L13.5 185 L24 174" fill="none" stroke="var(--navy)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </div>
+      <div class="chart-main">
+        <div class="week-labels" id="weekLabels" aria-hidden="true"></div>
+        <div class="grid-row-area">
+          <div class="age-labels" id="ageLabels" aria-hidden="true"></div>
+          <div class="weeks-grid" id="weeksGrid" role="group" aria-label="4,680 weeks. Select a square to mark it."></div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <span class="source">waitbutwhy.com</span>
+      <span class="end-age">90</span>
+    </footer>
+  </main>
+</div>
+<script>
+  (() => {
+    const weekLabels = document.getElementById('weekLabels');
+    const ageLabels = document.getElementById('ageLabels');
+    const weeksGrid = document.getElementById('weeksGrid');
+    const storageKey = 'life-in-weeks-marked-v1';
+    let marked = new Set();
+
+    try {
+      const saved = JSON.parse(localStorage.getItem(storageKey) || '[]');
+      if (Array.isArray(saved)) marked = new Set(saved.filter(n => Number.isInteger(n) && n >= 0 && n < 90 * 52));
+    } catch (_) {
+      marked = new Set();
+    }
+
+    // Week labels shown in the reference: 1, 5, 10, ... 50.
+    [1, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50].forEach(week => {
+      const label = document.createElement('span');
+      label.textContent = week;
+      label.style.gridColumn = String(week);
+      weekLabels.appendChild(label);
+    });
+
+    // Age labels shown every five years, starting at age 0.
+    for (let age = 0; age < 90; age += 5) {
+      const label = document.createElement('span');
+      label.textContent = age;
+      label.style.gridRow = String(age + 1);
+      ageLabels.appendChild(label);
+    }
+
+    function save() {
+      try { localStorage.setItem(storageKey, JSON.stringify([...marked])); } catch (_) {}
+    }
+
+    function toggleWeek(button, index) {
+      const isMarked = marked.has(index);
+      if (isMarked) marked.delete(index); else marked.add(index);
+      button.setAttribute('aria-pressed', String(!isMarked));
+      save();
+    }
+
+    const fragment = document.createDocumentFragment();
+    for (let age = 0; age < 90; age++) {
+      for (let week = 1; week <= 52; week++) {
+        const index = age * 52 + (week - 1);
+        const cell = document.createElement('button');
+        cell.type = 'button';
+        cell.className = 'week';
+        cell.setAttribute('aria-label', `Age ${age}, week ${week}`);
+        cell.setAttribute('aria-pressed', String(marked.has(index)));
+        cell.title = `Age ${age} · Week ${week}`;
+        cell.addEventListener('click', () => toggleWeek(cell, index));
+        fragment.appendChild(cell);
+      }
+    }
+    weeksGrid.appendChild(fragment);
+  })();
+</script>
+</body>
+</html>
