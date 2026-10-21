@@ -13,18 +13,18 @@
     font-display: swap;
   }
   :root {
-    --navy: #080b88;
-    --red: #d10d13;
-    --ink: #171717;
+    --navy: #f0f0f0;
+    --red: #e01d22;
+    --ink: #ededed;
     --cell-size: 9.28px;
     --column-gap: 7.2px;
     --row-gap: 5.4px;
   }
   * { box-sizing: border-box; }
-  html { background: #fff; }
+  html { background: #000; color-scheme: dark; }
   body {
     margin: 0;
-    background: #fff;
+    background: #000;
     color: var(--ink);
     font-family: Arial, Helvetica, sans-serif;
   }
@@ -41,7 +41,8 @@
     padding: 0;
   }
   .title {
-    margin: 0 0 0 70px;
+    margin: 0;
+    text-align: center;
     color: var(--navy);
     white-space: nowrap;
     font-family: "Georgia Local", Georgia, "Times New Roman", serif;
@@ -105,7 +106,7 @@
     align-items: end;
     height: 22px;
     margin-bottom: 2px;
-    color: #303030;
+    color: #9a9a9a;
     font-size: 18px;
     font-weight: 400;
     line-height: 1;
@@ -125,7 +126,7 @@
     grid-template-rows: repeat(90, var(--cell-size));
     row-gap: var(--row-gap);
     pointer-events: none;
-    color: #303030;
+    color: #9a9a9a;
     font-size: 17px;
     line-height: var(--cell-size);
     text-align: right;
@@ -145,9 +146,9 @@
     min-width: 0;
     margin: 0;
     padding: 0;
-    border: 1px solid #292929;
+    border: 1px solid #4c4c4c;
     border-radius: 0;
-    background: #fff;
+    background: #000;
     appearance: none;
     cursor: pointer;
     transition: background-color 80ms linear, border-color 80ms linear;
@@ -165,7 +166,7 @@
   }
   .source {
     display: inline-block;
-    color: #080808;
+    color: #ededed;
     font-size: 21px;
     font-weight: 700;
     letter-spacing: .1px;
@@ -174,7 +175,7 @@
     position: absolute;
     right: 0;
     top: -12px;
-    color: #080808;
+    color: #ededed;
     font-size: 31px;
     font-weight: 700;
     line-height: 1;
