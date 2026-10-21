@@ -13,18 +13,18 @@
     font-display: swap;
   }
   :root {
-    --navy: #f0f0f0;
-    --red: #e01d22;
-    --ink: #ededed;
+    --navy: #080b88;
+    --red: #d10d13;
+    --ink: #171717;
     --cell-size: 9.28px;
     --column-gap: 7.2px;
     --row-gap: 5.4px;
   }
   * { box-sizing: border-box; }
-  html { background: #000; color-scheme: dark; }
+  html { background: #fff; }
   body {
     margin: 0;
-    background: #000;
+    background: #fff;
     color: var(--ink);
     font-family: Arial, Helvetica, sans-serif;
   }
@@ -43,7 +43,7 @@
   .title {
     margin: 0;
     text-align: center;
-    color: var(--navy);
+    color: #000;
     white-space: nowrap;
     font-family: "Georgia Local", Georgia, "Times New Roman", serif;
     font-size: 62px;
@@ -52,7 +52,6 @@
     line-height: 1.08;
     text-transform: uppercase;
   }
-  .title .red { color: var(--red); }
   .week-heading {
     display: flex;
     align-items: center;
@@ -61,8 +60,9 @@
     margin: 33px 0 0 70px;
     color: var(--navy);
     white-space: nowrap;
+    font-family: Helvetica, Arial, sans-serif;
     font-size: 29px;
-    font-weight: 400;
+    font-weight: 700;
     line-height: 1;
   }
   .horizontal-arrow { width: 147px; height: 28px; flex: 0 0 147px; overflow: visible; }
@@ -85,9 +85,10 @@
   }
   .age-heading {
     color: var(--navy);
+    font-family: Helvetica, Arial, sans-serif;
     font-size: 27px;
     line-height: 1;
-    font-weight: 400;
+    font-weight: 700;
     writing-mode: vertical-rl;
     transform: rotate(180deg);
     white-space: nowrap;
@@ -106,9 +107,10 @@
     align-items: end;
     height: 22px;
     margin-bottom: 2px;
-    color: #9a9a9a;
+    color: #303030;
+    font-family: Helvetica, Arial, sans-serif;
     font-size: 18px;
-    font-weight: 400;
+    font-weight: 700;
     line-height: 1;
   }
   .week-labels span { text-align: center; transform: translateX(-1px); }
@@ -126,8 +128,10 @@
     grid-template-rows: repeat(90, var(--cell-size));
     row-gap: var(--row-gap);
     pointer-events: none;
-    color: #9a9a9a;
+    color: #303030;
+    font-family: Helvetica, Arial, sans-serif;
     font-size: 17px;
+    font-weight: 700;
     line-height: var(--cell-size);
     text-align: right;
   }
@@ -146,9 +150,9 @@
     min-width: 0;
     margin: 0;
     padding: 0;
-    border: 1px solid #4c4c4c;
-    border-radius: 0;
-    background: #000;
+    border: 1px solid #292929;
+    border-radius: 50%;
+    background: #fff;
     appearance: none;
     cursor: pointer;
     transition: background-color 80ms linear, border-color 80ms linear;
@@ -166,7 +170,7 @@
   }
   .source {
     display: inline-block;
-    color: #ededed;
+    color: #080808;
     font-size: 21px;
     font-weight: 700;
     letter-spacing: .1px;
@@ -175,7 +179,7 @@
     position: absolute;
     right: 0;
     top: -12px;
-    color: #ededed;
+    color: #080808;
     font-size: 31px;
     font-weight: 700;
     line-height: 1;
@@ -196,7 +200,7 @@
 <body>
 <div class="viewport">
   <main class="sheet" aria-label="Memento mori — a 90-year human life in weeks">
-    <h1 class="title">Memento <span class="red">Mori</span></h1>
+    <h1 class="title">Memento Mori</h1>
 
     <div class="week-heading">
       <span>Week of the Year</span>
