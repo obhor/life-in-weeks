@@ -314,15 +314,7 @@
     const weekLabels = document.getElementById('weekLabels');
     const ageLabels = document.getElementById('ageLabels');
     const weeksGrid = document.getElementById('weeksGrid');
-    const storageKey = 'life-in-weeks-marked-v1';
     let marked = new Set();
-
-    try {
-      const saved = JSON.parse(localStorage.getItem(storageKey) || '[]');
-      if (Array.isArray(saved)) marked = new Set(saved.filter(n => Number.isInteger(n) && n >= 0 && n < 90 * 52));
-    } catch (_) {
-      marked = new Set();
-    }
 
     // Week labels shown in the reference: 1, 5, 10, ... 50.
     [1, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50].forEach(week => {
@@ -340,15 +332,10 @@
       ageLabels.appendChild(label);
     }
 
-    function save() {
-      try { localStorage.setItem(storageKey, JSON.stringify([...marked])); } catch (_) {}
-    }
-
     function toggleWeek(button, index) {
       const isMarked = marked.has(index);
       if (isMarked) marked.delete(index); else marked.add(index);
       button.setAttribute('aria-pressed', String(!isMarked));
-      save();
     }
 
     const fragment = document.createDocumentFragment();
@@ -371,28 +358,17 @@
 
     const birthInput = document.getElementById('birthInput');
     const swatches = document.querySelectorAll('.swatch');
-    const colorKey = 'life-in-weeks-mark-color-v1';
-    const birthKey = 'life-in-weeks-birth-date-v1';
 
     function setColor(color) {
       document.documentElement.style.setProperty('--mark', color);
       swatches.forEach((swatch) => {
         swatch.setAttribute('aria-pressed', String(swatch.dataset.color === color));
       });
-      try { localStorage.setItem(colorKey, color); } catch (_) {}
     }
-
-    let savedColor = null;
-    try { savedColor = localStorage.getItem(colorKey); } catch (_) {}
-    if (savedColor && /^#[0-9a-f]{6}$/i.test(savedColor)) setColor(savedColor);
 
     swatches.forEach((swatch) => {
       swatch.addEventListener('click', () => setColor(swatch.dataset.color));
     });
-
-    let savedBirth = null;
-    try { savedBirth = localStorage.getItem(birthKey); } catch (_) {}
-    if (savedBirth) birthInput.value = savedBirth;
 
     birthInput.addEventListener('input', () => {
       const value = birthInput.value;
@@ -405,8 +381,6 @@
       marked = new Set();
       for (let i = 0; i <= weeks && i < 90 * 52; i++) marked.add(i);
       cells.forEach((cell, i) => cell.setAttribute('aria-pressed', String(marked.has(i))));
-      save();
-      try { localStorage.setItem(birthKey, value); } catch (_) {}
     });
 
     document.getElementById('printBtn').addEventListener('click', () => window.print());
