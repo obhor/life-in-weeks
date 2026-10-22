@@ -58,7 +58,7 @@
     gap: 18px;
     height: 40px;
     margin: 33px 0 0 70px;
-    color: var(--navy);
+    color: #000;
     white-space: nowrap;
     font-family: Helvetica, Arial, sans-serif;
     font-size: 29px;
@@ -77,6 +77,7 @@
   .age-side {
     display: flex;
     flex-direction: column;
+    color: #000;
     align-items: flex-start;
     gap: 8px;
     padding-top: 24px; /* first grid row starts after the 22px week-label row + 2px gap */
@@ -84,7 +85,7 @@
     min-height: 10px;
   }
   .age-heading {
-    color: var(--navy);
+    color: #000;
     font-family: Helvetica, Arial, sans-serif;
     font-size: 27px;
     line-height: 1;
@@ -155,11 +156,11 @@
     background: #fff;
     appearance: none;
     cursor: pointer;
-    transition: background-color 80ms linear, border-color 80ms linear;
+    transition: transform 80ms ease-out, background-color 80ms linear, border-color 80ms linear;
   }
   .week[aria-pressed="true"] { background: var(--navy); border-color: var(--navy); }
   .week:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; z-index: 1; }
-  .week:hover { border-color: var(--navy); }
+  .week:hover { border-color: #000; z-index: 1; }
   .footer {
     position: relative;
     width: 850px;
@@ -213,7 +214,7 @@
       <div class="age-side" aria-hidden="true">
         <div class="age-heading">Age</div>
         <svg class="vertical-arrow" viewBox="0 0 27 190">
-          <path d="M13.5 1 V185 M3 174 L13.5 185 L24 174" fill="none" stroke="var(--navy)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+          <path d="M13.5 1 V185 M3 174 L13.5 185 L24 174" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
         </svg>
       </div>
       <div class="chart-main">
@@ -274,6 +275,7 @@
     }
 
     const fragment = document.createDocumentFragment();
+    const cells = new Array(90 * 52);
     for (let age = 0; age < 90; age++) {
       for (let week = 1; week <= 52; week++) {
         const index = age * 52 + (week - 1);
@@ -284,10 +286,67 @@
         cell.setAttribute('aria-pressed', String(marked.has(index)));
         cell.title = `Age ${age} · Week ${week}`;
         cell.addEventListener('click', () => toggleWeek(cell, index));
+        cells[index] = cell;
         fragment.appendChild(cell);
       }
     }
     weeksGrid.appendChild(fragment);
+
+    // Circles grow under the pointer, neighbours taper off with distance.
+    if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      const COLS = 52, ROWS = 90, REACH = 4, LIFT = 0.55;
+      let pitchX = 0, pitchY = 0, originX = 0, originY = 0;
+      let pointerX = -1e9, pointerY = -1e9, queued = false;
+      let grown = [];
+
+      function measure() {
+        const first = cells[0].getBoundingClientRect();
+        pitchX = cells[1].getBoundingClientRect().left - first.left;
+        pitchY = cells[COLS].getBoundingClientRect().top - first.top;
+        originX = first.left + first.width / 2;
+        originY = first.top + first.height / 2;
+      }
+
+      function update() {
+        queued = false;
+        for (const i of grown) cells[i].style.transform = '';
+        grown = [];
+
+        const col = Math.round((pointerX - originX) / pitchX);
+        const row = Math.round((pointerY - originY) / pitchY);
+        const radius = pitchX * 3.2;
+
+        for (let r = Math.max(0, row - REACH); r <= Math.min(ROWS - 1, row + REACH); r++) {
+          for (let c = Math.max(0, col - REACH); c <= Math.min(COLS - 1, col + REACH); c++) {
+            const dx = pointerX - (originX + c * pitchX);
+            const dy = pointerY - (originY + r * pitchY);
+            const d = Math.hypot(dx, dy);
+            if (d >= radius) continue;
+            const t = 1 - d / radius;
+            const index = r * COLS + c;
+            cells[index].style.transform = `scale(${(1 + LIFT * t * t).toFixed(3)})`;
+            grown.push(index);
+          }
+        }
+      }
+
+      function queue() {
+        if (!queued) { queued = true; requestAnimationFrame(update); }
+      }
+
+      weeksGrid.addEventListener('pointerenter', measure);
+      weeksGrid.addEventListener('pointermove', (event) => {
+        pointerX = event.clientX;
+        pointerY = event.clientY;
+        queue();
+      });
+      weeksGrid.addEventListener('pointerleave', () => {
+        pointerX = pointerY = -1e9;
+        queue();
+      });
+      addEventListener('scroll', measure, { passive: true });
+      addEventListener('resize', measure);
+    }
   })();
 </script>
 </body>
