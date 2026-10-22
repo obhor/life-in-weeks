@@ -399,9 +399,20 @@
       const now = new Date();
       const today = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
       if (!Number.isFinite(born) || born > today) return;
-      const weeks = Math.floor((today - born) / (7 * 86400000));
+
+      // Rows follow real birthdays: a 52-cell row is 364 days, a year is ~365.
+      const d = new Date(born);
+      let age = new Date(today).getUTCFullYear() - d.getUTCFullYear();
+      let start = Date.UTC(d.getUTCFullYear() + age, d.getUTCMonth(), d.getUTCDate());
+      if (start > today) {
+        age--;
+        start = Date.UTC(d.getUTCFullYear() + age, d.getUTCMonth(), d.getUTCDate());
+      }
+      const week = Math.min(51, Math.floor((today - start) / (7 * 86400000)));
+      const last = Math.min(age * 52 + week, 90 * 52 - 1);
+
       marked = new Set();
-      for (let i = 0; i <= weeks && i < 90 * 52; i++) marked.add(i);
+      for (let i = 0; i <= last; i++) marked.add(i);
       cells.forEach((cell, i) => cell.setAttribute('aria-pressed', String(marked.has(i))));
     });
 
