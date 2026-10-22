@@ -56,12 +56,13 @@
   .vivere { margin: 28px 0 0; }
   .toolbar {
     position: fixed;
-    top: 50%;
+    top: 0;
+    bottom: 0;
     left: 24px;
-    transform: translateY(-50%);
     z-index: 2;
     display: flex;
     flex-direction: column;
+    justify-content: center;
     align-items: flex-start;
     gap: 20px;
     width: 190px;
@@ -246,11 +247,27 @@
     font-weight: 700;
     line-height: 1;
   }
-  @media (max-width: 1240px) {
+  @media screen and (max-width: 1240px) {
     .viewport { padding-left: 232px; }
   }
-  @media (max-width: 920px) {
-    .sheet { margin-left: 0; margin-right: 0; }
+  @media screen and (max-width: 920px) {
+    .viewport { padding: 0; }
+    .toolbar {
+      position: static;
+      width: auto;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin: 12px;
+    }
+    .field { flex: 1 1 auto; min-width: 0; flex-direction: row; gap: 0; }
+    .field-label { display: none; }
+    .date-input { width: 100%; min-width: 0; padding: 6px 8px; font-size: 16px; }
+    .swatches { flex: 0 0 auto; gap: 8px; }
+    .swatch { width: 20px; height: 20px; }
+    .print-btn { position: static; flex: 0 0 auto; padding: 8px 14px; font-size: 14px; }
+    .sheet { margin: 8px auto 16px; }
   }
   @media (prefers-reduced-motion: reduce) {
     .week { transition: none; }
@@ -261,6 +278,7 @@
     .viewport { padding: 0; overflow: visible; }
     .sheet { margin: 0 auto; }
     .toolbar, .print-btn { display: none; }
+    .sheet { zoom: 1 !important; }
     .week { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
   }
 </style>
@@ -268,7 +286,7 @@
 <body>
 <div class="viewport">
   <aside class="toolbar" aria-label="Chart options">
-    <label class="field">Birth date
+    <label class="field"><span class="field-label">Birth date</span>
       <input class="date-input" id="birthInput" type="date" min="1900-01-01" max="2100-12-31">
     </label>
     <div class="swatches" role="radiogroup" aria-label="Highlight colour">
@@ -277,6 +295,7 @@
       <button type="button" class="swatch" style="--sw:#c21b2c" data-color="#c21b2c" aria-label="Red pen" aria-pressed="false"></button>
       <button type="button" class="swatch" style="--sw:#0b6b3a" data-color="#0b6b3a" aria-label="Green pen" aria-pressed="false"></button>
     </div>
+    <button type="button" class="print-btn" id="printBtn">Print</button>
   </aside>
 
   <main class="sheet" aria-label="Memento mori — a 90-year human life in weeks">
@@ -311,7 +330,6 @@
 
     <h2 class="title vivere">Memento Vivere</h2>
   </main>
-  <button type="button" class="print-btn" id="printBtn">Print</button>
 </div>
 <script>
   (() => {
@@ -389,8 +407,19 @@
 
     document.getElementById('printBtn').addEventListener('click', () => window.print());
 
+    // Scale the whole sheet down on narrow screens so it never scrolls sideways.
+    const sheet = document.querySelector('.sheet');
+    function fitSheet() {
+      const narrow = matchMedia('screen and (max-width: 920px)').matches;
+      sheet.style.zoom = narrow
+        ? String(Math.min(1, (document.documentElement.clientWidth - 24) / 920))
+        : '';
+    }
+    addEventListener('resize', fitSheet);
+    fitSheet();
+
     // Circles grow under the pointer, neighbours taper off with distance.
-    if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    if (!matchMedia('(prefers-reduced-motion: reduce)').matches && matchMedia('(hover: hover)').matches) {
       const COLS = 52, ROWS = 90, REACH = 4, LIFT = 0.55;
       let pitchX = 0, pitchY = 0, originX = 0, originY = 0;
       let pointerX = -1e9, pointerY = -1e9, queued = false;
