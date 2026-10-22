@@ -52,6 +52,7 @@
     line-height: 1.08;
     text-transform: uppercase;
   }
+  .vivere { margin: 28px 0 0; }
   .toolbar {
     position: fixed;
     top: 50%;
@@ -254,8 +255,8 @@
     .week { transition: none; }
   }
   @media print {
-    @page { size: A4 portrait; margin: 6mm; }
-    body { zoom: 0.66; }
+    @page { size: A4 portrait; margin: 4mm; }
+    body { zoom: 0.62; }
     .viewport { padding: 0; overflow: visible; }
     .sheet { margin: 0 auto; }
     .toolbar, .print-btn { display: none; }
@@ -306,6 +307,8 @@
     <footer class="footer">
       <span class="end-age">90</span>
     </footer>
+
+    <h2 class="title vivere">Memento Vivere</h2>
   </main>
   <button type="button" class="print-btn" id="printBtn">Print</button>
 </div>
