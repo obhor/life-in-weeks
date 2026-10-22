@@ -30,7 +30,6 @@
   }
   .viewport {
     width: 100%;
-    padding-left: 232px;
     overflow-x: auto;
     overflow-y: visible;
     scrollbar-width: thin;
@@ -244,6 +243,9 @@
     font-size: 31px;
     font-weight: 700;
     line-height: 1;
+  }
+  @media (max-width: 1240px) {
+    .viewport { padding-left: 232px; }
   }
   @media (max-width: 920px) {
     .sheet { margin-left: 0; margin-right: 0; }
